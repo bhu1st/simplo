@@ -1,5 +1,5 @@
 {
-    "name": "your/simplo-app",
+    "name": "bhu1st/simplo",
     "description": "A simple PHP MVC framework.",
     "type": "project",
     "autoload": {
