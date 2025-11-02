@@ -146,7 +146,9 @@ class HomeController extends Controller
 
 Models are responsible for all data logic and database interaction. They should extend `Simplo\Model`.
 
-**Example `src/App/Models/User.php`:**```php
+**Example `src/App/Models/User.php`:**
+
+```php
 <?php
 namespace App\Models;
 
@@ -167,6 +169,7 @@ class User extends Model
 Views are simple PHP files containing HTML and minimal PHP logic for displaying data. They are located in the `views/` directory. Data passed from the controller is available as variables.
 
 **Example `views/hello.php`:**
+
 ```php
 <h1>Welcome to Simplo!</h1>
 
