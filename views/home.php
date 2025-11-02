@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-
+<link rel="stylesheet" href="<?php echo asset('css/style.css'); ?>">
 <head>
     <meta charset="utf-8">
 
@@ -18,13 +18,6 @@
         ::webkit-selection {
             background-color: #E13300;
             color: white;
-        }
-
-        body {
-            background-color: #fff;
-            margin: 40px;
-            font: 13px/20px normal Helvetica, Arial, sans-serif;
-            color: #4F5155;
         }
 
         a {
@@ -67,11 +60,6 @@
             margin: 20px 0 0 0;
         }
 
-        #container {
-            margin: 10px auto;
-            border: 1px solid #D0D0D0;
-            -webkit-box-shadow: 0 0 8px #D0D0D0;
-        }
     </style>
 
     <title>Welcome to Simplo</title>

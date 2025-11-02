@@ -1,0 +1,16 @@
+/* public/css/style.css */
+
+body {
+    background-color: #f0f8ff;
+    margin: 40px;
+    font: 13px/20px normal Helvetica, Arial, sans-serif;
+    color: #4F5155;
+}
+
+#container {
+    margin: 10px auto;
+    background-color: #f0f8ff;
+    border: 1px solid #b0c4de;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    -webkit-box-shadow: 0 0 8px #D0D0D0;
+}

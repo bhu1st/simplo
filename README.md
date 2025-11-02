@@ -206,6 +206,38 @@ Views are simple PHP files containing HTML and minimal PHP logic for displaying 
 <p><?php echo $data; ?></p>
 ```
 
+## Helper Functions
+
+Simplo supports globally available helper functions for common tasks like redirects, debugging, and form handling.
+
+### How It Works
+
+Helpers are loaded via Composer's `"files"` autoloading mechanism. Any file listed in the `files` array in `composer.json` will be automatically included on every request. The helper files are located in the top-level `helpers/` directory.
+
+### Adding New Helpers
+
+1.  Create a new function inside an existing helper file (e.g., `helpers/common.php`) or create a new file (e.g., `helpers/string.php`).
+2.  Add the path to your new file in the `"files"` array in `composer.json`:
+    ```json
+    "autoload": {
+        "psr-4": { ... },
+        "files": [
+            "helpers/common.php",
+            "helpers/form.php",
+            "helpers/string.php"
+        ]
+    }
+    ```
+3.  **Important:** After changing `composer.json`, you must run `composer dump-autoload` in your terminal to apply the changes.
+
+### Available Helpers
+
+*   `dd(...$args)`: Dumps the given variables and ends the script.
+*   `redirect(string $path)`: Performs a header redirect to the given path.
+*   `old(string $key, $default = '')`: Retrieves an old input value from a POST request to repopulate forms.
+*   `base_url(string $path = '')`: Generates the full, dynamic base URL to the application root, optionally appending a path.
+*   `asset(string $path)`: A convenient wrapper around `base_url()` for linking to public assets like CSS, JS, and images.
+
 ## Theming System
 
 Simplo's theming system allows you to override default views without modifying core files.
