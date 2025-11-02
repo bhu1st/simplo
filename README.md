@@ -4,14 +4,16 @@
 
 Simplo is a minimalist, lightweight PHP MVC framework designed for simplicity and learning. It provides a basic, modern foundation for building small to medium-sized applications, focusing on clean architecture and fundamental concepts like Dependency Injection and a clear Separation of Concerns.
 
+This version is **Composer-free**, making it a completely self-contained project with zero external dependencies.
+
 ## Philosophy
 
-The core philosophy of Simplo is to provide a functional MVC structure without the steep learning curve or overhead of larger frameworks. It's an ideal starting point for developers who want to understand the inner workings of a framework or for projects where a full-stack solution like Laravel or Symfony would be overkill.
+The core philosophy of Simplo is to provide a functional MVC structure without the steep learning curve or overhead of larger frameworks. It's an ideal starting point for developers who want to understand the inner workings of a framework or for projects that require a simple, dependency-free foundation.
 
 ## Key Features
 
-*   **Modern Architecture:** Built with modern PHP best practices in mind.
-*   **PSR-4 Autoloading:** Uses Composer for standard, reliable class loading.
+*   **Zero Dependencies:** The framework is entirely self-contained. No `composer install` step is needed.
+*   **PSR-4 Compliant Autoloader:** Includes a simple, built-in autoloader (`autoloader.php`) for all application classes.
 *   **Dependency Injection Container:** A simple service container manages dependencies (like the database), promoting decoupled and testable code.
 *   **Clean Routing:** A straightforward router that supports parameters and maps them to controller actions.
 *   **MVC Pattern:** A clear separation between Models (data logic), Views (presentation), and Controllers (request handling).
@@ -28,6 +30,10 @@ simplo/
 │   ├── database.php
 │   ├── routes.php
 │   └── theme.php
+├── helpers/                # Global helper functions
+│   ├── common.php
+│   ├── form.php
+│   └── url.php
 ├── public/                 # Web server root - the only publicly accessible directory
 │   ├── .htaccess
 │   └── index.php           # The single entry point (front controller)
@@ -42,12 +48,9 @@ simplo/
 │       ├── Model.php
 │       ├── Router.php
 │       └── Application.php
-├── themes/                 # Contains theme directories to override default views
-│   └── dark-mode/
-│       └── views/
 ├── views/                  # Default presentation/template files
-├── vendor/                 # Composer dependencies
-└── composer.json           # Composer configuration
+├── themes/                 # Contains theme directories to override default views
+└── autoloader.php          # The custom PSR-4 class autoloader
 ```
 
 ## Installation
@@ -55,24 +58,17 @@ simplo/
 ### Prerequisites
 
 *   PHP 7.4 or higher
-*   Composer installed globally
 *   A database server (e.g., MySQL/MariaDB)
 
 ### Steps
 
-1.  **Clone the repository:**
+1.  **Clone or download the repository:**
     ```bash
     git clone <your-repo-url> simplo
     cd simplo
     ```
 
-2.  **Install dependencies:**
-    This will download the necessary packages and generate the PSR-4 autoloader.
-    ```bash
-    composer install
-    ```
-
-3.  **Configure your database:**
+2.  **Configure your database:**
     Open `config/database.php` and enter your database credentials.
     ```php
     <?php
@@ -86,7 +82,7 @@ simplo/
     ```
     Import your database schema if you have one.
 
-4.  **Configure your web server:**
+3.  **Configure your web server:**
     Point your web server's document root to the `/public` directory. This is crucial for security as it prevents direct access to your application files.
 
     **Apache:** The included `.htaccess` file in the `public/` directory should handle this automatically. Ensure `mod_rewrite` is enabled.
@@ -111,6 +107,8 @@ simplo/
     }
     ```
 
+That's it! Your Simplo application is ready to go.
+
 ## How to Use Simplo
 
 ### 1. Routing
@@ -123,25 +121,9 @@ Routes are defined in `config/routes.php`. The file returns a function that rece
 *   **Route with a Parameter:** Use curly braces `{}` to define named parameters.
     `$router->get('/user/{id}', [UserController::class, 'show']);`
 
-**Example `config/routes.php`:**
-```php
-<?php
-use App\Controllers\HomeController;
-use Simplo\Router;
-
-return function(Router $router) {
-    $router->get('/', [HomeController::class, 'index']);
-    $router->get('/greet/{name}', [HomeController::class, 'greet']);
-};
-```
-
 ### 2. Controllers
 
-Controllers handle incoming requests, interact with models, and load views. They must extend `Simplo\Controller`.
-
-*   The `__construct()` method receives the Dependency Injection container.
-*   The base controller provides a `$this->db` property for database access.
-*   Use `$this->view('view-name', ['data' => $value])` to render a view.
+Controllers handle incoming requests, interact with models, and load views. They must extend `Simplo\Controller`. Use `$this->view('view-name', ['data' => $value])` to render a view.
 
 **Example `src/App/Controllers/HomeController.php`:**
 ```php
@@ -149,19 +131,10 @@ Controllers handle incoming requests, interact with models, and load views. They
 namespace App\Controllers;
 
 use Simplo\Controller;
-use App\Models\User;
 
 class HomeController extends Controller
 {
-    public function index()
-    {
-        $userModel = new User($this->db);
-        $users = $userModel->get_last_ten_entries();
-
-        $this->view('home', ['data' => ['users' => $users]]);
-    }
-
-    public function greet($name) // The {name} parameter from the route is passed here
+    public function greet($name)
     {
         $data = "Hello, " . htmlspecialchars($name) . "!";
         $this->view('hello', ['data' => $data]);
@@ -173,11 +146,7 @@ class HomeController extends Controller
 
 Models are responsible for all data logic and database interaction. They should extend `Simplo\Model`.
 
-*   The constructor receives the `Simplo\Database` instance, decoupling it from the controller.
-*   Use `$this->db->query()` to execute SQL.
-
-**Example `src/App/Models/User.php`:**
-```php
+**Example `src/App/Models/User.php`:**```php
 <?php
 namespace App\Models;
 
@@ -195,9 +164,7 @@ class User extends Model
 
 ### 4. Views
 
-Views are simple PHP files containing HTML and minimal PHP logic for displaying data. They are located in the `views/` directory.
-
-*   Data passed from the controller via the `$this->view()` method is available as variables. For example, `['user' => $user]` makes a `$user` variable available in the view.
+Views are simple PHP files containing HTML and minimal PHP logic for displaying data. They are located in the `views/` directory. Data passed from the controller is available as variables.
 
 **Example `views/hello.php`:**
 ```php
@@ -208,65 +175,45 @@ Views are simple PHP files containing HTML and minimal PHP logic for displaying 
 
 ## Helper Functions
 
-Simplo supports globally available helper functions for common tasks like redirects, debugging, and form handling.
+Simplo supports globally available helper functions for common tasks like redirects and debugging.
 
 ### How It Works
 
-Helpers are loaded via Composer's `"files"` autoloading mechanism. Any file listed in the `files` array in `composer.json` will be automatically included on every request. The helper files are located in the top-level `helpers/` directory.
+Helpers are **manually included** in the main `public/index.php` front controller. This makes them globally available throughout the application.
 
 ### Adding New Helpers
 
 1.  Create a new function inside an existing helper file (e.g., `helpers/common.php`) or create a new file (e.g., `helpers/string.php`).
-2.  Add the path to your new file in the `"files"` array in `composer.json`:
-    ```json
-    "autoload": {
-        "psr-4": { ... },
-        "files": [
-            "helpers/common.php",
-            "helpers/form.php",
-            "helpers/string.php"
-        ]
-    }
+2.  **Important:** Open `public/index.php` and add a `require_once` statement for your new file in the "HELPER FILE LOADING" section.
+    ```php
+    /*
+     * ------------------------------------------------------
+     *  MANUAL HELPER FILE LOADING
+     * ------------------------------------------------------
+     */
+    require_once ROOT_PATH . '/helpers/common.php';
+    require_once ROOT_PATH . '/helpers/form.php';
+    require_once ROOT_PATH . '/helpers/url.php';
+    require_once ROOT_PATH . '/helpers/string.php'; // Add your new helper here
     ```
-3.  **Important:** After changing `composer.json`, you must run `composer dump-autoload` in your terminal to apply the changes.
 
 ### Available Helpers
 
 *   `dd(...$args)`: Dumps the given variables and ends the script.
 *   `redirect(string $path)`: Performs a header redirect to the given path.
 *   `old(string $key, $default = '')`: Retrieves an old input value from a POST request to repopulate forms.
-*   `base_url(string $path = '')`: Generates the full, dynamic base URL to the application root, optionally appending a path.
+*   `base_url(string $path = '')`: Generates the full, dynamic base URL to the application root.
 *   `asset(string $path)`: A convenient wrapper around `base_url()` for linking to public assets like CSS, JS, and images.
 
 ## Theming System
 
 Simplo's theming system allows you to override default views without modifying core files.
 
-#### How It Works
-
-1.  When you call `$this->view('home', $data)`, the framework first checks if an active theme is set in `config/theme.php`.
-2.  If a theme is active, it looks for the view file at `themes/your-theme-name/views/home.php`.
-3.  If the file exists in the theme, it is rendered.
-4.  If the file does not exist in the theme, the framework **falls back** and renders the default view at `views/home.php`.
-
 #### How to Use
 
-1.  **Create a Theme Directory:**
-    Create a new folder in the top-level `themes/` directory (e.g., `themes/my-awesome-theme/`). Inside it, create a `views` folder.
-
-2.  **Override a View:**
-    Copy any view file you want to change from `views/` into `themes/my-awesome-theme/views/` and modify it.
-
-3.  **Activate the Theme:**
-    Open `config/theme.php` and set the `active_theme` key to your theme's directory name.
-    ```php
-    <?php
-    // config/theme.php
-    return [
-        'active_theme' => 'my-awesome-theme',
-    ];
-    ```
-    To disable the theme, set the value to `null`.
+1.  **Create a Theme Directory:** Create a new folder in the top-level `themes/` directory (e.g., `themes/my-theme/`). Inside it, create a `views` folder.
+2.  **Override a View:** Copy any view file you want to change from `views/` into `themes/my-theme/views/` and modify it.
+3.  **Activate the Theme:** Open `config/theme.php` and set the `active_theme` key to your theme's directory name. To disable the theme, set the value to `null`.
 
 ## License
 
