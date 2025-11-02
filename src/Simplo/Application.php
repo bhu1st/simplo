@@ -24,6 +24,11 @@ class Application
             $dsn = "{$config['driver']}:host={$config['host']};dbname={$config['database']};charset={$config['charset']}";
             return new Database($dsn, $config['username'], $config['password']);
         });
+
+        //Bind the theme configuration
+        $this->container->set('config.theme', function() {
+            return require dirname(__DIR__, 2) . '/config/theme.php';
+        });
     }
 
     public function run()

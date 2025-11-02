@@ -12,13 +12,30 @@ class Controller
         $this->db = $container->get('db'); // Convenience access to db
     }
 
-    protected function view(string $view, array $data = [])
+     protected function view(string $view, array $data = [])
     {
-        // Using `_` prefix to avoid collision with extracted variables
-        $_view_path = dirname(__DIR__, 2) . "/views/{$view}.php";
+        // 1. Get theme configuration
+        $themeConfig = $this->container->get('config.theme');
+        $activeTheme = $themeConfig['active_theme'] ?? null;
+        
+        $_view_path = null;
 
+        // 2. If a theme is active, check for a view file in the theme's directory first.
+        if ($activeTheme) {
+            $themedViewPath = dirname(__DIR__, 2) . "/themes/{$activeTheme}/views/{$view}.php";
+            if (file_exists($themedViewPath)) {
+                $_view_path = $themedViewPath;
+            }
+        }
+
+        // 3. If no theme view was found, fall back to the default path.
+        if ($_view_path === null) {
+            $_view_path = dirname(__DIR__, 2) . "/views/{$view}.php";
+        }
+
+        // 4. The rest of the function remains the same.
         if (!file_exists($_view_path)) {
-            throw new \Exception("View file not found: {$_view_path}");
+            throw new \Exception("View file not found in theme or default views: {$_view_path}");
         }
 
         extract($data);
