@@ -191,4 +191,4 @@ Simplo's theming system allows you to override default views without modifying c
 
 ## License
 
-The Simplo framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+The Simplo framework is open-sourced software licensed under the [MIT license](LICENSE).
