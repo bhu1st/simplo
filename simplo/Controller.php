@@ -22,7 +22,7 @@ class Controller
 
         // 2. If a theme is active, check for a view file in the theme's directory first.
         if ($activeTheme) {
-            $themedViewPath = dirname(__DIR__, 2) . "/themes/{$activeTheme}/views/{$view}.php";
+            $themedViewPath = dirname(__DIR__, 1) . "/themes/{$activeTheme}/views/{$view}.php";
             if (file_exists($themedViewPath)) {
                 $_view_path = $themedViewPath;
             }
@@ -30,7 +30,7 @@ class Controller
 
         // 3. If no theme view was found, fall back to the default path.
         if ($_view_path === null) {
-            $_view_path = dirname(__DIR__, 2) . "/views/{$view}.php";
+            $_view_path = dirname(__DIR__, 1) . "/app/views/{$view}.php";
         }
 
         // 4. The rest of the function remains the same.

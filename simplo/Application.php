@@ -15,7 +15,7 @@ class Application
     {
         // Bind database configuration
         $this->container->set('config.db', function() {
-            return require dirname(__DIR__, 2) . '/config/database.php';
+            return require dirname(__DIR__, 1) . '/config/database.php';
         });
 
         // Bind a single, shared database connection
@@ -27,7 +27,7 @@ class Application
 
         //Bind the theme configuration
         $this->container->set('config.theme', function() {
-            return require dirname(__DIR__, 2) . '/config/theme.php';
+            return require dirname(__DIR__, 1) . '/config/theme.php';
         });
     }
 
@@ -36,7 +36,7 @@ class Application
         $router = new Router($this->container);
         
         // Load the routes
-        $routes = require dirname(__DIR__, 2) . '/config/routes.php';
+        $routes = require dirname(__DIR__, 1) . '/config/routes.php';
         $routes($router);
         
         $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);

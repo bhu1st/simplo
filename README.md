@@ -33,24 +33,22 @@ simplo/
 ├── helpers/                # Global helper functions
 │   ├── common.php
 │   ├── form.php
-│   └── url.php
-├── public/                 # Web server root - the only publicly accessible directory
-│   ├── .htaccess
-│   └── index.php           # The single entry point (front controller)
-├── src/                    # All PSR-4 autoloaded PHP application code
-│   ├── App/                # Your specific application code
-│   │   ├── Controllers/
-│   │   └── Models/
-│   └── Simplo/             # The core framework code
+│   └── url.php 
+├── app/                    # Your specific application code
+│   │   ├── controllers/
+│   │   └── models/
+│   │   └── views/          # Default presentation/template files
+├── simplo/                 # The core framework code
 │       ├── Controller.php
 │       ├── Container.php
 │       ├── Database.php
 │       ├── Model.php
 │       ├── Router.php
-│       └── Application.php
-├── views/                  # Default presentation/template files
+│       └── Application.php                 
 ├── themes/                 # Contains theme directories to override default views
 └── autoloader.php          # The custom PSR-4 class autoloader
+├── .htaccess
+├── index.php               # The single entry point (front controller)
 ```
 
 ## Installation
@@ -82,33 +80,6 @@ simplo/
     ```
     Import your database schema if you have one.
 
-3.  **Configure your web server:**
-    Point your web server's document root to the `/public` directory. This is crucial for security as it prevents direct access to your application files.
-
-    **Apache:** The included `.htaccess` file in the `public/` directory should handle this automatically. Ensure `mod_rewrite` is enabled.
-
-    **Nginx:** Add a server block similar to this:
-    ```nginx
-    server {
-        listen 80;
-        server_name your-domain.com;
-        root /path/to/simplo/public;
-
-        index index.php;
-
-        location / {
-            try_files $uri $uri/ /index.php?$query_string;
-        }
-
-        location ~ \.php$ {
-            include snippets/fastcgi-php.conf;
-            fastcgi_pass unix:/var/run/php/php8.1-fpm.sock; # Adjust to your PHP-FPM version
-        }
-    }
-    ```
-
-That's it! Your Simplo application is ready to go.
-
 ## How to Use Simplo
 
 ### 1. Routing
@@ -125,7 +96,7 @@ Routes are defined in `config/routes.php`. The file returns a function that rece
 
 Controllers handle incoming requests, interact with models, and load views. They must extend `Simplo\Controller`. Use `$this->view('view-name', ['data' => $value])` to render a view.
 
-**Example `src/App/Controllers/HomeController.php`:**
+**Example `app/Controllers/HomeController.php`:**
 ```php
 <?php
 namespace App\Controllers;
@@ -146,7 +117,7 @@ class HomeController extends Controller
 
 Models are responsible for all data logic and database interaction. They should extend `Simplo\Model`.
 
-**Example `src/App/Models/User.php`:**
+**Example `app/Models/User.php`:**
 
 ```php
 <?php
@@ -168,7 +139,7 @@ class User extends Model
 
 Views are simple PHP files containing HTML and minimal PHP logic for displaying data. They are located in the `views/` directory. Data passed from the controller is available as variables.
 
-**Example `views/hello.php`:**
+**Example `app/views/hello.php`:**
 
 ```php
 <h1>Welcome to Simplo!</h1>
@@ -182,12 +153,12 @@ Simplo supports globally available helper functions for common tasks like redire
 
 ### How It Works
 
-Helpers are **manually included** in the main `public/index.php` front controller. This makes them globally available throughout the application.
+Helpers are **manually included** in the main `index.php` front controller. This makes them globally available throughout the application.
 
 ### Adding New Helpers
 
 1.  Create a new function inside an existing helper file (e.g., `helpers/common.php`) or create a new file (e.g., `helpers/string.php`).
-2.  **Important:** Open `public/index.php` and add a `require_once` statement for your new file in the "HELPER FILE LOADING" section.
+2.  **Important:** Open `index.php` and add a `require_once` statement for your new file in the "HELPER FILE LOADING" section.
     ```php
     /*
      * ------------------------------------------------------

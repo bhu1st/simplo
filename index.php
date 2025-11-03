@@ -1,7 +1,16 @@
 <?php
 
 // Define a constant for the project root for convenience
-define('ROOT_PATH', dirname(__DIR__));
+define('ROOT_PATH', __DIR__);
+
+/*
+ * ------------------------------------------------------
+ *  Make the Active Theme Globally Available
+ * ------------------------------------------------------
+ */
+
+$themeConfig = require_once ROOT_PATH . '/config/theme.php';
+define('ACTIVE_THEME', $themeConfig['active_theme'] ?? null);
 
 /*
  * ------------------------------------------------------
@@ -17,8 +26,8 @@ $loader = new Psr4AutoloaderClass();
 
 // 3. Register the namespace prefixes.
 // This tells the autoloader where to find the classes.
-$loader->addNamespace('Simplo', 'src/Simplo');
-$loader->addNamespace('App', 'src/App');
+$loader->addNamespace('Simplo', 'simplo');
+$loader->addNamespace('App', 'app');
 
 // 4. Register the autoloader with PHP.
 $loader->register();
