@@ -96,7 +96,7 @@ Routes are defined in `config/routes.php`. The file returns a function that rece
 
 Controllers handle incoming requests, interact with models, and load views. They must extend `Simplo\Controller`. Use `$this->view('view-name', ['data' => $value])` to render a view.
 
-**Example `app/Controllers/HomeController.php`:**
+**Example `app/controllers/HomeController.php`:**
 ```php
 <?php
 namespace App\Controllers;
@@ -117,7 +117,7 @@ class HomeController extends Controller
 
 Models are responsible for all data logic and database interaction. They should extend `Simplo\Model`.
 
-**Example `app/Models/User.php`:**
+**Example `app/models/User.php`:**
 
 ```php
 <?php
