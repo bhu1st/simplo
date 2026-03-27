@@ -1,4 +1,5 @@
 <?php
+
 namespace Simplo;
 
 class Router
@@ -28,23 +29,40 @@ class Router
 
     public function dispatch(string $uri, string $method)
     {
+        if (!isset($this->routes[$method])) {
+            throw new \Exception("No routes defined for method: $method");
+        }
+
         foreach ($this->routes[$method] as $route => $handler) {
-           $pattern = preg_replace('/\{([a-zA-Z0-9_]+)\}/', '(?P<$1>[a-zA-Z0-9-_]+)', $route);
+
+            $pattern = preg_replace(
+                '/\{([a-zA-Z0-9_]+)\}/',
+                '(?P<$1>[a-zA-Z0-9_-]+)',
+                $route
+            );
+
             if (preg_match('#^' . $pattern . '$#', $uri, $matches)) {
+
                 $controllerClass = $handler['controller'];
                 $action = $handler['action'];
-                
-                // Remove full match and numeric keys
+
                 $params = array_filter($matches, 'is_string', ARRAY_FILTER_USE_KEY);
 
-                if (class_exists($controllerClass)) {
-                    $controller = new $controllerClass($this->container);
-                    call_user_func_array([$controller, $action], $params);
-                    return;
+                if (!class_exists($controllerClass)) {
+                    throw new \Exception("Controller not found: $controllerClass");
                 }
+
+                $controller = new $controllerClass($this->container);
+
+                if (!method_exists($controller, $action)) {
+                    throw new \Exception("Method $action not found in $controllerClass");
+                }
+
+                call_user_func_array([$controller, $action], $params);
+                return;
             }
         }
-        
+
         http_response_code(404);
         throw new \Exception("No route found for URI: $uri");
     }

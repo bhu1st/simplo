@@ -1,5 +1,27 @@
 <?php
 
+// Setup Application Environment
+
+if (file_exists("localhost")) 
+{
+    define('ENVIRONMENT', "development");
+    define('HOST', 'http://localhost/');
+    define('HOSTDIR', 'simplo');
+    define('URLROOT', HOST . HOSTDIR);
+    ini_set('display_errors', '1');
+    error_reporting(E_ALL);
+} 
+else 
+{
+    define('ENVIRONMENT', "production");
+    define('HOST', 'https://www.example.com/');
+    define('HOSTDIR', '');
+    define('URLROOT', HOST . HOSTDIR);
+    ini_set('display_errors', '0');
+    error_reporting(0);
+    //error_reporting (E_ALL);
+}
+
 // Define a constant for the project root for convenience
 define('ROOT_PATH', __DIR__);
 
