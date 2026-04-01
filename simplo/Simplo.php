@@ -3,6 +3,7 @@ namespace Simplo;
 
 class Simplo
 {
+    private $VERSION = '0.7.0';
     public $container;
 
     public function __construct()
