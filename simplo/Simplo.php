@@ -1,7 +1,7 @@
 <?php
 namespace Simplo;
 
-class Application
+class Simplo
 {
     public $container;
 

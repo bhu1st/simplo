@@ -70,5 +70,5 @@ require_once ROOT_PATH . '/helpers/url.php';
  *  RUN THE APPLICATION
  * ------------------------------------------------------
  */
-$app = new Simplo\Application();
+$app = new Simplo\Simplo();
 $app->run();
